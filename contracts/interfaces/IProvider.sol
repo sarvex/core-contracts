@@ -4,45 +4,25 @@ pragma solidity 0.8.17;
 import "./IRewardPool.sol";
 
 /**
- * @title IValidator
+ * @title IProvider
  * @author Polygon Technology (Daniel Gretzke @gretzke)
  * @dev even though the natspec on the structs is not output,
  *  it is included for clarity
  */
 
 /**
- * @notice struct representation of a pool for reward distribution
- * @dev pools are formed by delegators to a specific validator
- * @dev uses virtual balances to track slashed delegations
- * @param supply amount of tokens in the pool
- * @param virtualSupply the total supply of virtual balances in the pool
- * @param magnifiedRewardPerShare coefficient to aggregate rewards
- * @param validator the address of the validator the pool based on
- * @param magnifiedRewardCorrections adjustments to reward magnifications by address
- * @param claimedRewards amount claimed by address
- * @param balances virtual balance by address
- */
-struct RewardPool {
-    uint256 supply;
-    uint256 virtualSupply;
-    uint256 magnifiedRewardPerShare;
-    address validator;
-    mapping(address => int256) magnifiedRewardCorrections;
-    mapping(address => uint256) claimedRewards;
-    mapping(address => uint256) balances;
-}
-
-/**
  * @notice data type representing a validator
  * @param blsKey the public BLS key of the validator
  * @param stake amount staked by the validator
- * @param commission fee taken from delegators' rewards and given to the validator
+ * @param totalStake amount staked by self + amount delegated to
+ * @param comission percent of validator's personal reward distributed to delegators
  * @param withdrawableRewards amount that can be withdrawn from
  * @param active if this validator is actively proposing/attesting
  */
-struct Validator {
-    uint256[4] blsKey;
+struct Provider {
+    uint256[4] blsKey; // TODO: probably should not be here ...
     uint256 stake;
+    uint256 totalStake;
     uint256 commission;
     uint256 withdrawableRewards;
     bool active;
@@ -60,7 +40,7 @@ struct Node {
     address left;
     address right;
     bool red;
-    Validator validator;
+    Provider provider;
 }
 
 /**
@@ -71,7 +51,7 @@ struct Node {
  * @param nodes address to node mapping
  * @param delegationPools validator RewardPools by validator address
  */
-struct ValidatorTree {
+struct ProviderTree {
     address root;
     uint256 count;
     uint256 totalStake;
