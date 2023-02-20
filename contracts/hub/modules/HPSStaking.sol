@@ -30,10 +30,10 @@ abstract contract HPSStaking is IHPSStaking, HPSStorage, HPSWithdrawal {
         (bool result, bool callSuccess) = bls.verifySingle(signature, pubkey, message);
         require(callSuccess && result, "INVALID_SIGNATURE");
 
-        _providers.insert(
-            msg.sender,
-            Provider({blsKey: pubkey, stake: 0, totalStake: 0, commission: 0, withdrawableRewards: 0, active: true})
-        );
+        Provider memory p;
+        p.blsKey = pubkey;
+        p.active = true;
+        _providers.insert(msg.sender, p);
         // _removeFromWhitelist(msg.sender);
 
         emit NewProvider(msg.sender, pubkey);

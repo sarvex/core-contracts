@@ -15,7 +15,7 @@ import "./IRewardPool.sol";
  * @param blsKey the public BLS key of the validator
  * @param stake amount staked by the validator
  * @param totalStake amount staked by self + amount delegated to
- * @param comission percent of validator's personal reward distributed to delegators
+ * @param commission percent of validator's personal reward distributed to delegators
  * @param withdrawableRewards amount that can be withdrawn from
  * @param active if this validator is actively proposing/attesting
  */
@@ -26,6 +26,9 @@ struct Provider {
     uint256 commission;
     uint256 withdrawableRewards;
     bool active;
+    // TODO: nested mapping won't work here and my assumption is that no provider can ever validate on more than a few chains
+    // TypeError: Types containing (nested) mappings can only be parameters or return variables of internal or library functions.
+    address[] subscribed;
 }
 
 /**

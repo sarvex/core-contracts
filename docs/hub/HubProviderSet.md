@@ -622,6 +622,45 @@ Stakes sent amount. Claims rewards beforehand.
 
 
 
+### subscribe
+
+```solidity
+function subscribe(address child) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| child | address | undefined |
+
+### subscribed
+
+```solidity
+function subscribed(address providerAddr, address childAddr) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| providerAddr | address | undefined |
+| childAddr | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### totalActiveStake
 
 ```solidity

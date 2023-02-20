@@ -10,6 +10,7 @@ import "./modules/HPSDelegation.sol";
 import "../libs/SafeMathInt.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ArraysUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
+import "./IChildProxy.sol";
 
 contract HubProviderSet is
     IHubProviderSetBase,
@@ -47,18 +48,37 @@ contract HubProviderSet is
 
         for (uint256 i = 0; i < providerAddresses.length; i++) {
             // _addToWhitelist(validatorAddresses[i]);
-            Provider memory provider = Provider({
-                blsKey: providerPubkeys[i],
-                stake: providerStakes[i],
-                totalStake: providerStakes[i],
-                commission: 0,
-                withdrawableRewards: 0,
-                active: true
-            });
+            Provider memory provider;
+            provider.blsKey = providerPubkeys[i];
+            provider.stake = providerStakes[i];
+            provider.totalStake = providerStakes[i];
+            provider.active = true;
             _providers.insert(providerAddresses[i], provider);
         }
         bls = newBls;
         message = newMessage;
+    }
+
+    function subscribed(address providerAddr, address childAddr) public view returns (bool) {
+        Provider memory provider = _providers.get(providerAddr);
+        if (provider.subscribed.length == 0) {
+            return false;
+        }
+        for (uint i = 0; i < provider.subscribed.length; i++) {
+            if (provider.subscribed[i] == childAddr) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // called by provider to subscribe to child chain through proxy contract
+    function subscribe(address child) external onlyProvider {
+        IChildProxy proxy = IChildProxy(child);
+        require(proxy.canSubscribe(msg.sender), "provider not authorized to subscribe");
+        require(!subscribed(msg.sender, child), "provider is already subscribed");
+        _providers.get(msg.sender).subscribed.push(child);
+        proxy.subscribe(msg.sender);
     }
 
     /**
