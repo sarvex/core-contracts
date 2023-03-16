@@ -185,7 +185,7 @@ library ProviderStorageLib {
                 probe = self.nodes[probe].right;
             }
         }
-        self.nodes[key] = Node({parent: cursor, left: EMPTY, right: EMPTY, red: true, provider: provider});
+        self.nodes[key] = ProviderNode({parent: cursor, left: EMPTY, right: EMPTY, red: true, provider: provider});
         if (cursor == EMPTY) {
             self.root = key;
         } else if (provider.totalStake < self.nodes[cursor].provider.totalStake) {

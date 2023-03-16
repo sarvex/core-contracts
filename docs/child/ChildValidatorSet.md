@@ -633,6 +633,24 @@ function minStake() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### onStateReceive
+
+```solidity
+function onStateReceive(uint256, address sender, bytes data) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+| sender | address | undefined |
+| data | bytes | undefined |
+
 ### owner
 
 ```solidity

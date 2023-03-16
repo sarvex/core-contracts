@@ -13,10 +13,12 @@ import "../libs/ValidatorStorage.sol";
 import "../libs/ValidatorQueue.sol";
 import "../libs/SafeMathInt.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ArraysUpgradeable.sol";
+import "../interfaces/IStateReceiver.sol";
 
 // solhint-disable max-states-count
 contract ChildValidatorSet is
     IChildValidatorSetBase,
+    IStateReceiver,
     CVSStorage,
     CVSAccessControl,
     CVSWithdrawal,
@@ -79,6 +81,21 @@ contract ChildValidatorSet is
 
             verifyValidatorRegistration(validators[i].addr, validators[i].signature, validators[i].pubkey);
         }
+    }
+
+    function onStateReceive(uint256 /* id */, address sender, bytes calldata data) external {
+        // slither-disable-next-line too-many-digits
+        require(msg.sender == 0x0000000000000000000000000000000000001001, "ONLY_STATERECEIVER");
+        // require(sender == predicate, "INVALID_SENDER"); // TODO: assert sent from known address on root chain?
+
+        (address valAddr, Validator memory validator) = abi.decode(data, (address, Validator));
+
+        // TODO: likely can't insert directly with stake. so insert and then queue up the stake ...?
+        _validators.insert(valAddr, validator);
+        // _queue.insert(msg.sender, int256(msg.value), 0);
+
+        emit NewValidator(valAddr, validator.blsKey);
+        emit Staked(valAddr, validator.stake); // TODO: total stake?
     }
 
     /**

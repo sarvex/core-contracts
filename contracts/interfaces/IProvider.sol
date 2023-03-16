@@ -38,7 +38,7 @@ struct Provider {
  * @param right the node in the tree to the right of this one
  * @param red bool denoting color of node for balancing
  */
-struct Node {
+struct ProviderNode {
     address parent;
     address left;
     address right;
@@ -58,6 +58,6 @@ struct ProviderTree {
     address root;
     uint256 count;
     uint256 totalStake;
-    mapping(address => Node) nodes;
+    mapping(address => ProviderNode) nodes;
     mapping(address => RewardPool) delegationPools;
 }
