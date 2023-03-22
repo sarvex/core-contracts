@@ -38,7 +38,6 @@ contract POCChildProxy is IChildProxy, Ownable2StepUpgradeable {
         Validator memory v = Validator({
             blsKey: p.blsKey, // TODO: likely want different BLS key per child chain
             stake: p.stake,
-            totalStake: p.totalStake,
             commission: p.commission,
             withdrawableRewards: 0,
             active: true
